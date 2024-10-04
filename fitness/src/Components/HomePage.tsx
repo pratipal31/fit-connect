@@ -1,16 +1,20 @@
-// src/app/page.tsx
-
 import React from "react";
 import Link from "next/link";
 
-// Card Component
-const Card: React.FC<{ title: string; description: string }> = ({
-  title,
-  description,
-}) => {
+// Card Component with Image
+const Card: React.FC<{
+  title: string;
+  description: string;
+  imageSrc: string;
+}> = ({ title, description, imageSrc }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 m-4 transition-transform transform hover:scale-105">
-      <h2 className="text-xl font-bold mb-2 text-gray-800">{title}</h2>
+    <div className="bg-white shadow-lg rounded-lg p-6 m-4 transition-transform transform hover:scale-105 w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl">
+      <img
+        src={imageSrc}
+        alt={title}
+        className="w-full h-48 object-cover rounded-t-lg mb-4" // Adjusted height for responsive behavior
+      />
+      <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 text-gray-800">{title}</h2>
       <p className="text-gray-600">{description}</p>
     </div>
   );
@@ -19,75 +23,85 @@ const Card: React.FC<{ title: string; description: string }> = ({
 // Home Page Component
 const HomePage: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="min-h-screen flex flex-col font-montserrat bg-white">
       {/* Navbar */}
-      <nav className="flex justify-between items-center bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
-        <h1 className="text-2xl font-bold">fit-connect</h1>
+      <nav className="flex justify-between items-center bg-gradient-to-r from-blue-100 to-blue-300 p-4 text-blue-900 shadow-md">
+        <h1 className="text-3xl sm:text-3xl font-extrabold tracking-wider">Fit-Connect</h1>
         <div className="flex space-x-4">
           <Link href="/login">
-            <button className="bg-white text-blue-600 hover:bg-gray-200 font-bold py-2 px-4 rounded transition-colors">
+            <button className="bg-blue-600 text-white hover:bg-blue-700 font-bold py-2 px-4 rounded-full transition-colors shadow-md">
               Log In
             </button>
           </Link>
           <Link href="/signup">
-            <button className="bg-white text-blue-600 hover:bg-gray-200 font-bold py-2 px-4 rounded transition-colors">
+            <button className="bg-blue-600 text-white hover:bg-blue-700 font-bold py-2 px-4 rounded-full transition-colors shadow-md">
               Sign Up
             </button>
           </Link>
         </div>
       </nav>
 
-      {/* Main Content */}
-      <main className="flex-grow flex flex-col items-center justify-center text-center py-10">
-        <h1 className="text-4xl font-bold mb-4 text-gray-800">
-          Welcome to Fit Connect
-        </h1>
-        <p className="text-lg text-gray-700 mb-8 max-w-md">
-          Join our community and take your fitness journey to the next level
-          with challenges, workouts, and support!
-        </p>
+      {/* Hero Section */}
+      <main className="relative flex-grow flex flex-col items-center justify-center text-center py-8 md:py-16 bg-gradient-to-b from-white to-blue-100">
+        <div className="relative z-10">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-blue-800 mb-6">
+            Empower Your Fitness Journey
+          </h1>
+          <p className="text-lg sm:text-xl text-blue-700 mb-8 max-w-xl mx-auto">
+            Share your workouts, track your progress, and join challenges with like-minded fitness enthusiasts.
+          </p>
 
-        <div className="flex flex-wrap justify-center">
-          <Card
-            title="Workout Challenges"
-            description="Participate in exciting workout challenges and push your limits!"
-          />
-          <Card
-            title="Fitness Workouts"
-            description="Access a variety of workouts designed by fitness experts."
-          />
-          <Card
-            title="Community Support"
-            description="Join our supportive community to share your progress and stay motivated."
-          />
+          {/* Cards Section */}
+          <div className="flex flex-wrap justify-center gap-6">
+            <Card
+              title="Workout Sharing"
+              description="Share your daily workouts with the community and gain valuable feedback."
+              imageSrc="workout.jpg"
+            />
+            <Card
+              title="Track Your Progress"
+              description="Monitor your progress over time with detailed statistics and insights."
+              imageSrc="gym.jpeg"
+            />
+            <Card
+              title="Challenges"
+              description="Participate in challenges to stay motivated and compete with others."
+              imageSrc="fitness.jpg"
+            />
+            <Card
+              title="Track Your Calories"
+              description="Keep an eye on your calorie intake and stay on top of your nutrition goals."
+              imageSrc="calories.jpg"
+            />
+          </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white p-6">
+      <footer className="bg-gradient-to-r from-blue-100 to-blue-300 text-blue-900 p-8 shadow-lg">
         <div className="container mx-auto text-center">
           <p className="mb-4">
             &copy; {new Date().getFullYear()} Fit Connect. All Rights Reserved.
           </p>
           <p className="mb-4">Connect with us on social media!</p>
           <div className="flex justify-center space-x-4 mb-4">
-            <Link href="#" className="text-gray-400 hover:text-white">
+            <Link href="#" className="text-blue-700 hover:text-blue-900">
               Facebook
             </Link>
-            <Link href="#" className="text-gray-400 hover:text-white">
+            <Link href="#" className="text-blue-700 hover:text-blue-900">
               Twitter
             </Link>
-            <Link href="#" className="text-gray-400 hover:text-white">
+            <Link href="#" className="text-blue-700 hover:text-blue-900">
               Instagram
             </Link>
-            <Link href="#" className="text-gray-400 hover:text-white">
+            <Link href="#" className="text-blue-700 hover:text-blue-900">
               LinkedIn
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             <div>
               <h5 className="font-bold mb-2">Features</h5>
-              <ul className="text-gray-400">
+              <ul className="text-blue-700">
                 <li>
                   <Link href="#">Challenges</Link>
                 </li>
@@ -104,7 +118,7 @@ const HomePage: React.FC = () => {
             </div>
             <div>
               <h5 className="font-bold mb-2">Company</h5>
-              <ul className="text-gray-400">
+              <ul className="text-blue-700">
                 <li>
                   <Link href="#">About Us</Link>
                 </li>
@@ -121,7 +135,7 @@ const HomePage: React.FC = () => {
             </div>
             <div>
               <h5 className="font-bold mb-2">Support</h5>
-              <ul className="text-gray-400">
+              <ul className="text-blue-700">
                 <li>
                   <Link href="#">Help Center</Link>
                 </li>
@@ -135,7 +149,7 @@ const HomePage: React.FC = () => {
             </div>
             <div>
               <h5 className="font-bold mb-2">Resources</h5>
-              <ul className="text-gray-400">
+              <ul className="text-blue-700">
                 <li>
                   <Link href="#">Blog</Link>
                 </li>

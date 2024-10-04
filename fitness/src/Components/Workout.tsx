@@ -1,197 +1,251 @@
 "use client";
 
-import React, { useState } from "react";
-import { Dumbbell, Plus, Loader2 } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { gsap } from "gsap";
+import { Dumbbell, Plus, Loader2, Clock, Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Workout {
+  id?: string;
   name: string;
-  type: "strength" | "cardio" | "flexibility";
+  type: string;
   duration: number;
   date: string;
 }
 
+const workoutTypes = [
+  "Strength",
+  "Cardio",
+  "Flexibility",
+  "HIIT",
+  "Yoga",
+  "Pilates",
+  "CrossFit",
+  "Swimming",
+  "Cycling",
+  "Running",
+  "Boxing",
+  "Martial Arts",
+  "Dance",
+];
+
+// Sample static workout data
+const initialWorkouts: Workout[] = [
+  {
+    id: "1",
+    name: "Morning Run",
+    type: "Cardio",
+    duration: 45,
+    date: "2024-10-03",
+  },
+  {
+    id: "2",
+    name: "Yoga Session",
+    type: "Yoga",
+    duration: 60,
+    date: "2024-10-02",
+  },
+  {
+    id: "3",
+    name: "Weightlifting",
+    type: "Strength",
+    duration: 30,
+    date: "2024-10-01",
+  },
+];
+
 const AddWorkout: React.FC = () => {
   const [workout, setWorkout] = useState<Workout>({
     name: "",
-    type: "strength",
-    duration: 0,
+    type: "Strength",
+    duration: 30,
     date: new Date().toISOString().split("T")[0],
   });
-  const [workouts, setWorkouts] = useState<Workout[]>([]); // Store workouts locally
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [workouts, setWorkouts] = useState<Workout[]>(initialWorkouts); // Start with static data
+  const formRef = useRef<HTMLFormElement>(null);
+  const workoutsRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
+  const handleChange = (name: string, value: string | number) => {
     setWorkout((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    setError(null);
-    setSuccess(false);
 
-    try {
-      // Simulate adding workout by updating local state
-      setWorkouts((prevWorkouts) => [...prevWorkouts, workout]);
+    // Simulate adding a new workout to the state
+    const newWorkout: Workout = {
+      ...workout,
+      id: (workouts.length + 1).toString(), // Simple id generation
+    };
 
-      setSuccess(true);
+    setTimeout(() => {
+      setWorkouts((prev) => [newWorkout, ...prev]); // Add new workout to the list
+
+      toast({
+        title: "Workout added!",
+        description: "Your workout has been successfully added.",
+      });
+
       setWorkout({
         name: "",
-        type: "strength",
-        duration: 0,
+        type: "Strength",
+        duration: 30,
         date: new Date().toISOString().split("T")[0],
       });
-    } catch (err) {
-      setError("Failed to add workout. Please try again.");
-      console.error(err);
-    } finally {
+
+      if (formRef.current) {
+        gsap.from(formRef.current, {
+          y: 20,
+          opacity: 0,
+          duration: 0.5,
+          ease: "back.out(1.7)",
+        });
+      }
+
       setIsLoading(false);
-    }
+    }, 1000); // Simulate loading delay
   };
 
+  useEffect(() => {
+    if (workoutsRef.current) {
+      gsap.from(workoutsRef.current.children, {
+        opacity: 0,
+        y: 20,
+        stagger: 0.1,
+        duration: 0.5,
+        ease: "back.out(1.7)",
+      });
+    }
+  }, [workouts]);
+
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <Dumbbell className="mx-auto h-12 w-12 text-blue-600" />
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Add New Workout
-          </h2>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="workout-name" className="sr-only">
-                Workout Name
-              </label>
-              <input
+    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold flex items-center justify-center">
+            <Dumbbell className="mr-2" /> Add New Workout
+          </CardTitle>
+          <CardDescription>Track your fitness journey</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="workout-name">Workout Name</Label>
+              <Input
                 id="workout-name"
-                name="name"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Workout Name"
                 value={workout.name}
-                onChange={handleChange}
+                onChange={(e) => handleChange("name", e.target.value)}
+                required
               />
             </div>
-            <div>
-              <label htmlFor="workout-type" className="sr-only">
-                Workout Type
-              </label>
-              <select
-                id="workout-type"
-                name="type"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+            <div className="space-y-2">
+              <Label htmlFor="workout-type">Workout Type</Label>
+              <Select
                 value={workout.type}
-                onChange={handleChange}
+                onValueChange={(value) => handleChange("type", value)}
               >
-                <option value="strength">Strength</option>
-                <option value="cardio">Cardio</option>
-                <option value="flexibility">Flexibility</option>
-              </select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select workout type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {workoutTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <div>
-              <label htmlFor="workout-duration" className="sr-only">
-                Duration (minutes)
-              </label>
-              <input
-                id="workout-duration"
-                name="duration"
-                type="number"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Duration (minutes)"
-                value={workout.duration}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="workout-date" className="sr-only">
-                Date
-              </label>
-              <input
-                id="workout-date"
-                name="date"
-                type="date"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                value={workout.date}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="flex">
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">{error}</h3>
-                </div>
+            <div className="space-y-2">
+              <Label htmlFor="workout-duration">Duration (minutes)</Label>
+              <div className="flex items-center space-x-2">
+                <Input
+                  id="workout-duration"
+                  type="number"
+                  value={workout.duration}
+                  onChange={(e) =>
+                    handleChange("duration", parseInt(e.target.value))
+                  }
+                  required
+                  min="1"
+                />
+                <Clock className="text-gray-400" />
               </div>
             </div>
-          )}
-
-          {success && (
-            <div className="rounded-md bg-green-50 p-4">
-              <div className="flex">
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-green-800">
-                    Workout added successfully!
-                  </h3>
-                </div>
+            <div className="space-y-2">
+              <Label htmlFor="workout-date">Date</Label>
+              <div className="flex items-center space-x-2">
+                <Input
+                  id="workout-date"
+                  type="date"
+                  value={workout.date}
+                  onChange={(e) => handleChange("date", e.target.value)}
+                  required
+                />
+                <Calendar className="text-gray-400" />
               </div>
             </div>
-          )}
-
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
-                <Loader2 className="animate-spin h-5 w-5" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
-                <>
-                  <Plus className="h-5 w-5 mr-2" aria-hidden="true" />
-                  Add Workout
-                </>
+                <Plus className="mr-2 h-4 w-4" />
               )}
-            </button>
-          </div>
-        </form>
+              Add Workout
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
-        <div className="mt-8">
-          <h3 className="text-lg font-bold">Workouts</h3>
-          <ul className="mt-4">
-            {workouts.map((workout, index) => (
-              <li
-                key={index}
-                className="mb-2 p-2 border border-gray-300 rounded"
-              >
-                <div>
-                  <strong>Name:</strong> {workout.name}
-                </div>
-                <div>
-                  <strong>Type:</strong> {workout.type}
-                </div>
-                <div>
-                  <strong>Duration:</strong> {workout.duration} minutes
-                </div>
-                <div>
-                  <strong>Date:</strong> {workout.date}
-                </div>
-              </li>
+      <div className="mt-8 w-full max-w-4xl">
+        <h2 className="text-2xl font-bold text-white mb-4">Recent Workouts</h2>
+        <ScrollArea className="h-[400px] w-full rounded-md border border-white/20 p-4">
+          <div
+            ref={workoutsRef}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          >
+            {workouts.map((workout) => (
+              <Card key={workout.id} className="overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                  <CardTitle>{workout.name}</CardTitle>
+                  <CardDescription className="text-white/80">
+                    {workout.type}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-4">
+                  <p className="text-sm text-gray-600 flex items-center">
+                    <Clock className="mr-2 h-4 w-4" /> {workout.duration}{" "}
+                    minutes
+                  </p>
+                  <p className="text-sm text-gray-600 flex items-center mt-2">
+                    <Calendar className="mr-2 h-4 w-4" /> {workout.date}
+                  </p>
+                </CardContent>
+              </Card>
             ))}
-          </ul>
-        </div>
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );

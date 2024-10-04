@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 // Card Component with Image
 const Card: React.FC<{
@@ -14,7 +15,9 @@ const Card: React.FC<{
         alt={title}
         className="w-full h-48 object-cover rounded-t-lg mb-4" // Adjusted height for responsive behavior
       />
-      <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 text-gray-800">{title}</h2>
+      <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 text-gray-800">
+        {title}
+      </h2>
       <p className="text-gray-600">{description}</p>
     </div>
   );
@@ -26,7 +29,9 @@ const HomePage: React.FC = () => {
     <div className="min-h-screen flex flex-col font-montserrat bg-white">
       {/* Navbar */}
       <nav className="flex justify-between items-center bg-gradient-to-r from-blue-100 to-blue-300 p-4 text-blue-900 shadow-md">
-        <h1 className="text-3xl sm:text-3xl font-extrabold tracking-wider">Fit-Connect</h1>
+        <h1 className="text-3xl sm:text-3xl font-extrabold tracking-wider">
+          Fit-Connect
+        </h1>
         <div className="flex space-x-4">
           <Link href="/login">
             <button className="bg-blue-600 text-white hover:bg-blue-700 font-bold py-2 px-4 rounded-full transition-colors shadow-md">
@@ -48,7 +53,8 @@ const HomePage: React.FC = () => {
             Empower Your Fitness Journey
           </h1>
           <p className="text-lg sm:text-xl text-blue-700 mb-8 max-w-xl mx-auto">
-            Share your workouts, track your progress, and join challenges with like-minded fitness enthusiasts.
+            Share your workouts, track your progress, and join challenges with
+            like-minded fitness enthusiasts.
           </p>
 
           {/* Cards Section */}
@@ -74,6 +80,13 @@ const HomePage: React.FC = () => {
               imageSrc="calories.jpg"
             />
           </div>
+        </div>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <Button>Button 1</Button>
+          <Button>Button 2</Button>
+          <Button>Button 3</Button>
+          <Button>Button 4</Button>
+          <Button>Button 5</Button>
         </div>
       </main>
 

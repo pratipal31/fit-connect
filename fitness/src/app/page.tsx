@@ -1,5 +1,4 @@
 import HomePage from "../components/HomePage";
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import React from "react";
@@ -7,7 +6,7 @@ import React from "react";
 export default function Home() {
   return (
     <>
-      <HomePage/>
+      <HomePage />
       <div className="min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600 flex flex-col justify-center items-center text-white">
         <h1 className="text-4xl font-bold mb-6">Welcome to FitConnect</h1>
         <p className="text-lg mb-8">
